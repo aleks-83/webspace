@@ -20,11 +20,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ./BTCstax
+        working-directory: ./btcstax
 
       - name: Build Project
         run: npm run build
-        working-directory: ./BTCstax
+        working-directory: ./btcstax
 
       - name: Sync Files to Hetzner FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -33,4 +33,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
-          local-dir: ./BTCstax/dist/
+          local-dir: ./btcstax/dist/
