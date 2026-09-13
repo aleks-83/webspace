@@ -53,5 +53,6 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
           server-dir: /public_html/
           local-dir: ${{ steps.set_dir.outputs.upload_dir }}
