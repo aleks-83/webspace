@@ -27,15 +27,25 @@ jobs:
       - name: Build Project
         run: npm run build
         env:
+          NITRO_PRESET: static
           NITRO_PRERENDER: true
         working-directory: ./btcstax-website
 
+      - name: Ensure index.html exists
+        run: |
+          if [ ! -f "./btcstax-website/.output/public/index.html" ]; then
+            echo "Creating SPA fallback index.html for Apache..."
+            if [ -f "./btcstax-website/index.html" ]; then
+              cp ./btcstax-website/index.html ./btcstax-website/.output/public/index.html
+            elif [ -f "./btcstax-website/public/index.html" ]; then
+              cp ./btcstax-website/public/index.html ./btcstax-website/.output/public/index.html
+            fi
+          fi
+
       - name: Inspect Output Folder Structure
         run: |
-          echo "=== Inhaltsverzeichnis nach Build ==="
-          ls -la ./btcstax-website/
-          echo "=== Suche nach typischen Build-Ordnern ==="
-          find ./btcstax-website -maxdepth 2 -type d
+          echo "=== Inhaltsverzeichnis von .output/public ==="
+          ls -la ./btcstax-website/.output/public/
         continue-on-error: true
 
       - name: Sync Files to Hetzner FTP
