@@ -28,17 +28,26 @@ jobs:
         run: npm run build
         working-directory: ./btcstax-website
 
-      - name: Ensure index.html exists
+      - name: Generate index.html for Static Webhosting
         run: |
-          mkdir -p ./btcstax-website/.output/public
-          if [ ! -f "./btcstax-website/.output/public/index.html" ]; then
-            echo "Creating SPA fallback index.html..."
-            if [ -f "./btcstax-website/index.html" ]; then
-              cp ./btcstax-website/index.html ./btcstax-website/.output/public/index.html
-            elif [ -f "./btcstax-website/public/index.html" ]; then
-              cp ./btcstax-website/public/index.html ./btcstax-website/.output/public/index.html
-            fi
-          fi
+          JS_FILE=$(ls ./btcstax-website/.output/public/assets/index-*.js 2>/dev/null | head -n 1 | xargs -n 1 basename)
+          CSS_FILE=$(ls ./btcstax-website/.output/public/assets/styles-*.css 2>/dev/null | head -n 1 | xargs -n 1 basename)
+
+          cat <<EOF > ./btcstax-website/.output/public/index.html
+          <!DOCTYPE html>
+          <html lang="de">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>BTCstax</title>
+              <link rel="stylesheet" href="/assets/${CSS_FILE}">
+            </head>
+            <body>
+              <div id="root"></div>
+              <script type="module" src="/assets/${JS_FILE}"></script>
+            </body>
+          </html>
+          EOF
 
       - name: Sync Files to Hetzner FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
