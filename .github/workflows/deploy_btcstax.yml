@@ -28,6 +28,18 @@ jobs:
         run: npm run build
         working-directory: ./btcstax-website
 
+      - name: Determine Output Directory
+        id: set_dir
+        run: |
+          if [ -d "./btcstax-website/dist" ]; then
+            echo "upload_dir=./btcstax-website/dist/" >> $GITHUB_OUTPUT
+          elif [ -d "./btcstax-website/build" ]; then
+            echo "upload_dir=./btcstax-website/build/" >> $GITHUB_OUTPUT
+          else
+            echo "Build failed: Neither dist nor build directory found."
+            exit 1
+          fi
+
       - name: Sync Files to Hetzner FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -37,4 +49,4 @@ jobs:
           protocol: ftps
           port: 21
           server-dir: /public_html/btcstax/
-          local-dir: ./btcstax-website/dist/
+          local-dir: ${{ steps.set_dir.outputs.upload_dir }}
