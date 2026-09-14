@@ -26,6 +26,8 @@ jobs:
 
       - name: Build Project
         run: npm run build
+        env:
+          NITRO_PRERENDER: true
         working-directory: ./btcstax-website
 
       - name: Inspect Output Folder Structure
