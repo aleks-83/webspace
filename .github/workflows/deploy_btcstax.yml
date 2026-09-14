@@ -30,8 +30,10 @@ jobs:
 
       - name: Inspect Output Folder Structure
         run: |
-          echo "=== Inhalt des Projekt-Ordners nach Build ==="
-          ls -la ./btcstax-website
+          echo "=== Inhaltsverzeichnis nach Build ==="
+          ls -la ./btcstax-website/
+          echo "=== Suche nach typischen Build-Ordnern ==="
+          find ./btcstax-website -maxdepth 2 -type d
         continue-on-error: true
 
       - name: Sync Files to Hetzner FTP
