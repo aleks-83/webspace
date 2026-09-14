@@ -1,50 +1,28 @@
-name: Deploy BTCstax to Hetzner Webspace
+name: Deploy BTCstax to Hetzner
 
-# NEU (Manuell auf Knopfdruck):
 on:
   workflow_dispatch:
 
 jobs:
   web-deploy:
-    name: Build & Deploy
+    name: Build & Deploy BTCstax
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Landingpage Code
         uses: actions/checkout@v4
-
-      - name: Check for package.json
-        id: check_pkg
-        run: |
-          if [ -f "./btcstax/package.json" ]; then
-            echo "has_package=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_package=false" >> $GITHUB_OUTPUT
-          fi
+        with:
+          repository: aleks-83/btcstax-website
 
       - name: Setup Node.js
-        if: steps.check_pkg.outputs.has_package == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: Install Dependencies
-        if: steps.check_pkg.outputs.has_package == 'true'
         run: npm install
-        working-directory: ./btcstax
 
       - name: Build Project
-        if: steps.check_pkg.outputs.has_package == 'true'
         run: npm run build
-        working-directory: ./btcstax
-
-      - name: Set Upload Directory
-        id: set_dir
-        run: |
-          if [ "${{ steps.check_pkg.outputs.has_package }}" == "true" ]; then
-            echo "upload_dir=./btcstax/dist/" >> $GITHUB_OUTPUT
-          else
-            echo "upload_dir=./btcstax/" >> $GITHUB_OUTPUT
-          fi
 
       - name: Sync Files to Hetzner FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -54,6 +32,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          securityOptions: '{"rejectUnauthorized": false}'
-          server-dir: /public_html/
-          local-dir: ${{ steps.set_dir.outputs.upload_dir }}
+          server-dir: /public_html/btcstax/
+          local-dir: ./dist/
