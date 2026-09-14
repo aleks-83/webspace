@@ -45,4 +45,4 @@ jobs:
           protocol: ftps
           port: 21
           server-dir: /public_html/btcstax/
-          local-dir: ./btcstax-website/dist/
+          local-dir: ./btcstax-website/.output/public/
